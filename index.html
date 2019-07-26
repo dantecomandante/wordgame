@@ -6,23 +6,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
-  <link rel="stylesheet" href="assets/css/reset.css">
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="./assets/css/reset.css">
+  <link rel="stylesheet" href="./assets/css/style.css">
 </head>
 
 <body>
-<div>
-    <h1>Hangman!</h1>
-
-    <p>
-       <span id="answer"></span>
-    </p>
-    <p>Lives: <span id="counter"></span></p>
-    <p id="wrongGuesses"></p>
+  <div id="game">
+    <h1 id="result">Hang Dude!</h1>
+    <div id="image" class="hm0"></div>
+    <p>Guesses Left: <span id="guesses"></span></p>
+    <p id="guess"></p>
+    <p id="inputLabel">Guess the Word!:</p>
+    <input type="text" name="word" id="word">
+    <button onclick="gsWrd()">Guess Word</button>
+    <p></p>
+    <p>Letters Guessed: <span id="letters"></span></p>
     <p>Wins: <span id="wins"></span></p>
     <p>Losses: <span id="losses"></span></p>
+    <button onclick="init()">New Game</button>
+  </div>
   <script src="assets/javascript/game.js"></script>
-</div>
 </body>
 
 </html>

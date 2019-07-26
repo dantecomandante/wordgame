@@ -1,72 +1,89 @@
+const words = ['banjo', 'harp', 'guitar', 'drums', 'piano',]
 
-		const word;
+let wins;
+let  losses;
+let  wordNeededGuess;
+let  blanks;
+let  guesses;
+let  letters;
+let  isOver;
+let  isTyping;
 
-		let guess;		//user guess
-		let letters = [];		//correct guessed letters
-		let wrongLetters = [];		//wrong guessed letters
-		let counter;		//count correct letters
-		let losses = 0;
-		let wins = 0;
+const init = _ => {
+  isTyping = false
+  isOver = false
+  wordNeededGuess = words[Math.floor(Math.random() * words.length)]
+  blanks = wordNeededGuess.split('').map(ltr => '_')
+  guesses = 7
+  letters = []
+  logictarget()
+}
 
+const logictarget = _ => {
+  document.querySelector('#guesses').textContent = guesses
+  document.querySelector('#guess').textContent = blanks.join(' ')
+  document.querySelector('#letters').textContent = letters.join(', ')
+  document.querySelector('#image').className = `hm${7 - guesses}`
+  document.querySelector('#wins').textContent = wins
+  document.querySelector('#losses').textContent = losses
+}
 
-		document.getElementById("losses").innerHTML = losses;
-		document.getElementById("wins").innerHTML = wins;
+const gsWrd = _ => {
+  if (wordNeededGuess === document.querySelector('#word').value) {
+    won()
+  } else {
+    lost()
+  }
+}
 
-		let wordList = ["guitar", "drum", "piano", "flute", "sax"]; 		
+const won = _ => {
+  isOver = true
+  wins++
+  blanks = wordNeededGuess.split('')
+  logictarget()
+  document.querySelector('#result').textContent = 'Damn, son! You alive!'
+  document.querySelector('#image').className = `victory`
+}
 
+const lost = _ => {
+  isOver = true
+  losses++
+  blanks = wordNeededGuess.split('')
+  logictarget()
+  document.querySelector('#result').textContent = 'Damn! You Dead!'
+  document.querySelector('#image').className = `defeat`
+}
 
-		function start() {
-		    word = wordList[Math.floor(Math.random() * wordList.length)];
-		    counter = 7;
-		    document.getElementById("counter").innerHTML = counter;
-		    for (i = 0; i < word.length; i++) {
-		        letters[i] = "__";
-		    }
+const checkEnd = _ => wordNeededGuess === blanks.join('') ? won() : guesses <= 0 ? lost() : null
 
-		    document.getElementById("answer").innerHTML = letters.join(" ");
-		    console.log(word);
-
-		}
-
-
-		//checks if letter is in the word or not
-		function checkLetter() {
-			document.onkeyup = function(event) {
-				guess = event.key.toLowerCase();
-				let found = false;
-				for (i = 0; i < word.length; i++) {
-					if (guess === word[i]) {
-						letters[i] = guess;
-						document.getElementById("answer").innerHTML = letters.join(" ");
-						found = true;
-					} 
-				}
-				//wrong letters go into the wrongLetters array and are displayed
-				if (found) return;
-				if (wrongLetters.indexOf(guess) < 0) {
-					wrongLetters.push(guess);
-					document.getElementById("wrongGuesses").innerHTML = wrongLetters.join(" ");
-					//every wrong guess subtracts one from the counter
-					counter--;
-					console.log(counter);
-					document.getElementById("counter").innerHTML = counter;
-
-
-					if (counter === 0) {
-						document.getElementById("losses").innerHTML = losses + 1;
-						console.log(losses);
-						confirm("YOU LOSE!! Play again?"); {
-							losses++;
-							counter = 7;
-							letters = [];
-							wrongLetters = [];
-							start();
-						}
-					}
-				}
-			}
-		}
+const verNew = letter => letters.indexOf(letter) === -1 ? checkLtr(letter) : null
 
 
-		start();
-		checkLetter();
+const checkLtr = letters => {
+ 
+  if (wordNeededGuess.indexOf(letter) !== -1) {
+   
+    wordNeededGuess.split('').forEach((ltr, index) => {
+      if (letter === ltr) {
+        
+        blanks[index] = letter
+      }
+    })
+    logictarget()
+    checkEnd()
+  } else {
+    letters.push(letter)
+    guesses--
+
+    logictarget()
+    checkEnd()
+  }
+}
+
+document.onkeyup = ({ key, keyCode }) => keyCode >= 65 && keyCode <= 90 && !isOver && !isTyping ? verNew(key) : null
+
+document.addEventListener('click', ({ target }) => { target.id === 'word' ? isTyping = true : isTyping = false })
+
+wins = 0
+losses = 0
+init()
